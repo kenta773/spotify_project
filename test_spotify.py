@@ -22,7 +22,6 @@ with st.beta_expander('新規プレイリスト作成'):
 # 追加していくプレイリストを選択
 add_playlist_dict = fu.user_playlists()
 add_playlist_dict_name = st.selectbox('プレイリスト選択', list(add_playlist_dict.keys()))
-st.sidebar.write(add_playlist_dict_name + "に追加されている曲")
 
 # アーティスト検索
 artist_name = st.text_input('アーティスト名検索(英語名推奨)', help='ex) 東京事変➔Tokyo Incients')
