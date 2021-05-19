@@ -5,9 +5,9 @@ import spotipy.util as util
 class Func:
     def __init__(self, user_id):
             self.user_id = user_id
-            self.client_id = '19ed9bc7fc964019a81c83f4a8e1e5a2'
-            self.client_secret = 'f0cba282399746d1afec283465f2a1b1'
-            self.redirect_uri = 'https://example.com'
+            self.client_id = CLIENT_ID
+            self.client_secret = CLIENT_SECRET
+            self.redirect_uri = REDIRECT_URI
             self.scope = 'user-read-recently-played user-top-read user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative user-follow-modify user-follow-read user-library-modify user-library-read user-read-private'
             token = util.prompt_for_user_token(self.user_id, self.scope, self.client_id, self.client_secret, self.redirect_uri)
             self.spotify = spotipy.Spotify(auth=token)
