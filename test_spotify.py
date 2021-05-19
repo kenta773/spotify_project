@@ -22,6 +22,8 @@ with st.beta_expander('新規プレイリスト作成'):
 # 追加していくプレイリストを選択
 add_playlist_dict = fu.user_playlists()
 add_playlist_dict_name = st.selectbox('プレイリスト選択', list(add_playlist_dict.keys()))
+playlist_id = add_playlist_dict[add_playlist_dict_name]
+st.sidebar.write(add_playlist_dict_name + "に追加されている曲")
 
 # アーティスト検索
 artist_name = st.text_input('アーティスト名検索(英語名推奨)', help='ex) 東京事変➔Tokyo Incients')
@@ -68,10 +70,18 @@ if artist_name != "":
                 for uri, check_bool in check_tracks_dict.items():
                     if check_bool == True:
                         track_list.append(uri)
-                choice_add_playlist_dict = spotify.user_playlist_add_tracks(user=user_id, playlist_id=add_playlist_dict[add_playlist_dict_name], tracks=track_list)
+                choice_add_playlist_dict = spotify.user_playlist_add_tracks(user=user_id, playlist_id=playlist_id, tracks=track_list)
 
-#サイドバーにプレイリストの内容を表示
-json_track_list = spotify.user_playlist(user=user_id, playlist_id=add_playlist_dict[add_playlist_dict_name], fields="tracks,next")
+# サイドバーにプレイリストの内容を表示
+json_track_list = spotify.user_playlist(user=user_id, playlist_id=playlist_id, fields="tracks,next")
+delete_tracks_dict = {}
 for i, item in enumerate(json_track_list['tracks']['items'], start=1):
     track = item['track']
-    st.sidebar.write("   %d %32.32s %s" % (i, track['artists'][0]['name'],track['name']))
+    with st.sidebar.beta_expander("   %d %32.32s %s" % (i, track['artists'][0]['name'],track['name'])):
+        delete_tracks_dict[track['id']] = st.button('プレイリストから削除', key=i, help='削除しても更新がかかるまでリストに残ります')
+        if delete_tracks_dict[track['id']] == True:
+            track_list = []
+            track_list.append(track['id'])
+            spotify.user_playlist_remove_all_occurrences_of_tracks(user_id, playlist_id, track_list)
+            with st.spinner('削除しました'):
+                time.sleep(2)
