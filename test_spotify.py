@@ -3,7 +3,7 @@ import func_util
 import time
 
 st.set_page_config(page_title='Streamlit × Spotifyで遊ぼう') # ページ情報
-user_id = '31c35rzej4m25eeqcz2u2wegqzo4' # ユーザID
+user_id = st.secrets['USER_ID'] # ユーザID
 fu = func_util.Func(user_id) # 別で定義した関数モジュールのインスタンス
 
 spotify = fu.spotify_auth() # Spotify認証
