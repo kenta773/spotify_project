@@ -2,7 +2,7 @@ import streamlit as st
 import func_util
 import time
 
-st.set_page_config(page_title='Streamlit × Spotifyで遊ぼう') # ページ情報
+st.set_page_config(page_title='Streamlit × Spotify') # ページ情報
 user_id = st.secrets['USER_ID'] # ユーザID
 fu = func_util.Func(user_id) # 別で定義した関数モジュールのインスタンス
 
@@ -11,7 +11,7 @@ spotify = fu.spotify_auth() # Spotify認証
 st.title('Streamlit × Spotifyで遊ぼう')
 
 # 新規プレイリスト追加
-with st.beta_expander('新規プレイリスト作成'):
+with st.expander('新規プレイリスト作成'):
     new_playlist_name = st.text_input('プレイリスト名の入力', '')
     add_playlist_dict_button = st.button('プレイリストを追加')
     if add_playlist_dict_button == True:
@@ -37,7 +37,7 @@ if artist_name != "":
         kouho_artists_dict = {}
         for kouho in json_artist_search['artists']['items']:
             kouho_artists_dict[kouho['name']] = kouho['id']
-        left_column, right_column = st.beta_columns(2)
+        left_column, right_column = st.columns(2)
         left_column.write('検索結果')
         radio_kouho_artists = left_column.radio('', list(kouho_artists_dict.keys()))
 
@@ -53,13 +53,13 @@ if artist_name != "":
         else:
             radio_related_artists = right_column.radio('', list(artname_related_dict.keys()))
             # 関連アーティストの楽曲名とプレビュー
-            left_column2, right_column2 = st.beta_columns(2)
+            left_column2, right_column2 = st.columns(2)
             related_artist_top_tracks = fu.artist_top_tracks(artname_related_dict[radio_related_artists])
             left_column2.write(radio_related_artists + 'の楽曲')
             right_column2.write("楽曲プレビュー")
             check_tracks_dict = {}
             for name, uri in related_artist_top_tracks.items():
-                col1, col2 = st.beta_columns(2)
+                col1, col2 = st.columns(2)
                 check_tracks_dict[uri['uri']] = col1.checkbox(name)
                 col2.audio(uri['preview'], format='audio/wav')
 
@@ -77,7 +77,7 @@ json_track_list = spotify.user_playlist(user=user_id, playlist_id=playlist_id, f
 delete_tracks_dict = {}
 for i, item in enumerate(json_track_list['tracks']['items'], start=1):
     track = item['track']
-    with st.sidebar.beta_expander("   %d %32.32s %s" % (i, track['artists'][0]['name'],track['name'])):
+    with st.sidebar.expander("   %d %32.32s %s" % (i, track['artists'][0]['name'],track['name'])):
         delete_tracks_dict[track['id']] = st.button('プレイリストから削除', key=i, help='削除しても更新がかかるまでリストに残ります')
         if delete_tracks_dict[track['id']] == True:
             track_list = []
